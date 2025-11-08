@@ -1,0 +1,20 @@
+name: Enforce Feature → Develop Merge
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  validate-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch name
+        if: startsWith(github.head_ref, 'feature/')
+        run: |
+          echo "Valid: Feature branch merging to develop."
+
+      - name: Fail if not feature branch
+        if: ${{ !startsWith(github.head_ref, 'feature/') }}
+        run: |
+          echo "Only feature/* branches can merge into develop."
+          exit 1
