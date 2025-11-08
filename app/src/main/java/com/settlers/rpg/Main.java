@@ -5,7 +5,7 @@ import com.settlers.rpg.utils.Log;
 import com.settlers.rpg.utils.LogConfig;
 
 public class Main{
-    static void main(String[] args){
+    public static void main(String[] args){
         LogConfig.setup();
         Log.SYSTEM.info("Game starting....");
         try{
