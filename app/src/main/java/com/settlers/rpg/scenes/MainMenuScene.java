@@ -6,7 +6,7 @@ import com.settlers.rpg.utils.Log;
 public class MainMenuScene implements Scene{
 
     private int input = 0;
-    private String name = "";
+    private final String name;
 
     public MainMenuScene(){
         name = "MainMenuScene";
