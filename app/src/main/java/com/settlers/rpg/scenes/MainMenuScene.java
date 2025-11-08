@@ -44,7 +44,7 @@ public class MainMenuScene implements Scene{
                 break;
             case 2:
                 Log.SCENE.info("Player has chosen to exit the game");
-                break;
+                return new ExitScene();
             default:
                 Log.SCENE.info("Unrecognized input");
         }
