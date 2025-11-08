@@ -11,7 +11,7 @@ public class GameLoop {
 
     private final SceneManager sceneManager;
     private boolean running = true;
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public GameLoop(SceneManager sceneManager){
         this.sceneManager = sceneManager;
