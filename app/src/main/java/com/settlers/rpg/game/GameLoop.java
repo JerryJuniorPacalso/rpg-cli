@@ -1,5 +1,6 @@
 package com.settlers.rpg.game;
 
+import com.settlers.rpg.scenes.ExitScene;
 import com.settlers.rpg.scenes.Scene;
 import com.settlers.rpg.scenes.SceneManager;
 import com.settlers.rpg.utils.ConsolePrinter;
@@ -23,13 +24,18 @@ public class GameLoop {
             Scene scene = sceneManager.getCurrentScene();
 
             try{
+                if(scene instanceof ExitScene){
+                    stop();
+                    continue;
+                }
+
                 scene.render();
                 String input = scanner.nextLine().trim();
 
                 Scene nextScene = scene.handleInput(input);
 
                 if(nextScene == null){
-                    Log.SCENE.warning("Scene returned null, stopping game");
+                    Log.GAME.warning("Scene returned null, stopping game");
                     stop();
                     continue;
                 }
