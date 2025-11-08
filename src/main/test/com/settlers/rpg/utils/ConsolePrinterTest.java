@@ -13,17 +13,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConsolePrinterTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
+    private final PrintStream customOut = new PrintStream(outContent);
 
     @BeforeEach
     void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
+        ConsolePrinter.setOutput(customOut);
     }
 
     @AfterEach
     void restoreStreams() {
-        System.setOut(originalOut);
-        outContent.reset();
+        ConsolePrinter.resetOutput();
     }
 
     @Test
@@ -79,5 +78,32 @@ class ConsolePrinterTest {
         assertEquals(2, lines.length, "Two lines should be printed");
         assertEquals("First line", lines[0]);
         assertEquals("Second line", lines[1]);
+    }
+
+
+    @Test
+    @DisplayName("success() should print message with green color code")
+    void testSuccessPrintsGreenMessage() {
+        String message = "Operation successful!";
+        ConsolePrinter.success(message);
+
+        String output = outContent.toString();
+
+        assertTrue(output.contains(message), "Output should contain the message text");
+        assertTrue(output.contains("\u001B[32m"), "Output should contain green ANSI code");
+        assertTrue(output.contains("\u001B[0m"), "Output should reset ANSI color");
+    }
+
+    @Test
+    @DisplayName("warn() should print message with yellow color code")
+    void testWarnPrintsYellowMessage() {
+        String message = "Low HP warning!";
+        ConsolePrinter.warn(message);
+
+        String output = outContent.toString();
+
+        assertTrue(output.contains(message), "Output should contain the message text");
+        assertTrue(output.contains("\u001B[33m"), "Output should contain yellow ANSI code");
+        assertTrue(output.contains("\u001B[0m"), "Output should reset ANSI color");
     }
 }
