@@ -1,4 +1,4 @@
-package com.settlers.rpg.scene;
+package com.settlers.rpg.scenes;
 
 public interface Scene {
     void render();
