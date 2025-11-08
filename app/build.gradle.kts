@@ -37,3 +37,7 @@ application {
     // Define the main class for the application.
     mainClass = "com.settlers.rpg.Main"
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
