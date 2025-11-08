@@ -1,10 +1,12 @@
 package com.settlers.rpg.game;
 
+import com.settlers.rpg.utils.Log;
+
 public class Game {
     public void start(){
-        System.out.println("class=Game, method=start, message=Start Game");
+        Log.SYSTEM.info("Start Game");
         GameLoop gameLoop = new GameLoop();
         gameLoop.run();
-        System.out.println("class=Game, method=start, message=End Game");
+        Log.SYSTEM.info("End Game");
     }
 }
