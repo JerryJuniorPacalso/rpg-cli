@@ -28,15 +28,15 @@ public class SceneManagerTest {
         // Create simple mock Scenes (no mocking frameworks needed)
         mockSceneA = new Scene() {
             @Override public void render() {}
-            @Override public void handleInput(String input) {}
-            @Override public void update() {}
+            @Override public Scene handleInput(String input) {return this;}
+            @Override public Scene update() {return this;}
             @Override public String getName() { return "SceneA"; }
         };
 
         mockSceneB = new Scene() {
             @Override public void render() {}
-            @Override public void handleInput(String input) {}
-            @Override public void update() {}
+            @Override public Scene handleInput(String input) {return this;}
+            @Override public Scene update() {return this;}
             @Override public String getName() { return "SceneB"; }
         };
 

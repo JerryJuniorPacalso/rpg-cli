@@ -23,7 +23,7 @@ public class MainMenuScene implements Scene{
     }
 
     @Override
-    public void handleInput(String input) {
+    public Scene handleInput(String input) {
         Log.SCENE.info("Handling input for main menu scene, input="+input);
         int inputAsInt;
         try{
@@ -33,11 +33,11 @@ public class MainMenuScene implements Scene{
             inputAsInt = 0;
         }
         setInput(inputAsInt);
-        update();
+        return update();
     }
 
     @Override
-    public void update() {
+    public Scene update() {
         switch (input){
             case 1:
                 Log.SCENE.info("Player has chosen new game");
@@ -48,6 +48,7 @@ public class MainMenuScene implements Scene{
             default:
                 Log.SCENE.info("Unrecognized input");
         }
+        return this;
     }
 
     @Override
