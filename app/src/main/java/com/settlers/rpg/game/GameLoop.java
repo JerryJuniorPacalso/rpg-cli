@@ -35,7 +35,7 @@ public class GameLoop {
                 Scene nextScene = scene.handleInput(input);
 
                 if(nextScene == null){
-                    Log.SCENE.warning("Scene returned null, stopping game");
+                    Log.GAME.warning("Scene returned null, stopping game");
                     stop();
                     continue;
                 }
