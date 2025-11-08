@@ -29,13 +29,13 @@ public class MainMenuSceneTest {
         // Capture log output
         logOut = new ByteArrayOutputStream();
         testHandler = new StreamHandler(logOut, new SimpleFormatter());
-        Log.SYSTEM.addHandler(testHandler);
-        Log.SYSTEM.setUseParentHandlers(false); // prevent double printing
+        Log.SCENE.addHandler(testHandler);
+        Log.SCENE.setUseParentHandlers(false); // prevent double printing
     }
 
     @AfterEach
     void tearDown() {
-        Log.SYSTEM.removeHandler(testHandler);
+        Log.SCENE.removeHandler(testHandler);
     }
 
     private String getLogOutput() {
@@ -108,5 +108,11 @@ public class MainMenuSceneTest {
         field.setAccessible(true);
         int value = (int) field.get(scene);
         assertEquals(2, value);
+    }
+
+    @Test
+    @DisplayName("getName() should return MainMenuScene")
+    void testGetName() {
+        assertEquals("MainMenuScene", scene.getName());
     }
 }
