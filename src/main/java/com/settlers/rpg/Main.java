@@ -1,7 +1,11 @@
 package com.settlers.rpg;
 
+import com.settlers.rpg.game.Game;
+
 public class Main{
-    public static void main(String[] args){
-       System.out.println("Hello World!");
+    static void main(String[] args){
+       System.out.println("Starting game");
+       Game game = new Game();
+       game.start();
     }
 }
