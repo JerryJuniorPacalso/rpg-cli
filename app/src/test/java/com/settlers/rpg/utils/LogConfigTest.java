@@ -2,11 +2,16 @@ package com.settlers.rpg.utils;
 
 import com.settlers.rpg.helper.LogConfigTestHelper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -14,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
 
 class LogConfigTest {
     private Logger rootLogger;
@@ -76,6 +82,30 @@ class LogConfigTest {
         for (Handler handler : rootLogger.getHandlers()) {
             handler.close();
             rootLogger.removeHandler(handler);
+        }
+    }
+
+
+    @Test
+    @DisplayName("setup() handles IOException gracefully")
+    void testSetupIOException() {
+        // Mock Files.createDirectories to throw IOException
+        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+            mockedFiles.when(() -> Files.createDirectories(Paths.get("logs")))
+                    .thenThrow(new IOException("Simulated failure"));
+
+            // Capture System.err
+            var errContent = new java.io.ByteArrayOutputStream();
+            var originalErr = System.err;
+            System.setErr(new java.io.PrintStream(errContent));
+
+            LogConfig.setup();
+
+            System.setErr(originalErr);
+            String errOutput = errContent.toString();
+
+            Assertions.assertTrue(errOutput.contains("Failed to setup logging"));
+            Assertions.assertTrue(errOutput.contains("Simulated failure"));
         }
     }
 }
