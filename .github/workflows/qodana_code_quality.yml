@@ -44,8 +44,10 @@ jobs:
           upload-result: false
           # quick-fixes available in Ultimate and Ultimate Plus plans
           push-fixes: 'none'
-      - uses: github/codeql-action/upload-sarif@v3
+      - name: Upload Qodana SARIF results
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          sha: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
