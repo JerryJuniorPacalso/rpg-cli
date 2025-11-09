@@ -47,6 +47,6 @@ jobs:
       - name: Upload Qodana SARIF results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          sha: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
