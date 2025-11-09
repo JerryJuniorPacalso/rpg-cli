@@ -49,5 +49,4 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           sha: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
