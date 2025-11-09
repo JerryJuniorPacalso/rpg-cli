@@ -7,11 +7,15 @@ name: Qodana
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
   push:
     branches:
       - main
       - develop
-      - feature/add-workflow
+      - 'feature/**'
 
 jobs:
   qodana:
@@ -23,13 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
           fetch-depth: 0
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2025.2
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
         with:
+          args: --baseline,qodana.sarif.json
           # When pr-mode is set to true, Qodana analyzes only the files that have been changed
           pr-mode: false
           use-caches: true
@@ -39,3 +44,9 @@ jobs:
           upload-result: false
           # quick-fixes available in Ultimate and Ultimate Plus plans
           push-fixes: 'none'
+      - name: Upload Qodana SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
+          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
