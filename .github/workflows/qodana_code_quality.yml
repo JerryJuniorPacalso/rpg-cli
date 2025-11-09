@@ -7,11 +7,15 @@ name: Qodana
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
   push:
     branches:
       - main
       - develop
-      - feature/add-workflow
+      - 'feature/**'
 
 jobs:
   qodana:
@@ -39,3 +43,6 @@ jobs:
           upload-result: false
           # quick-fixes available in Ultimate and Ultimate Plus plans
           push-fixes: 'none'
+      - uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json
