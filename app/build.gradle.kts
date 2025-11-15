@@ -1,10 +1,16 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    jacoco
+    id("jvm-test-suite")
 }
 
 group = "com.settlers"
 version = "0.0.1"
+
+jacoco {
+    toolVersion = "0.8.12"
+}
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -17,6 +23,8 @@ dependencies {
 
     // Test dependencies
     testImplementation("org.mockito:mockito-core:5.14.0")
+    testImplementation(platform("org.junit:junit-bom:5.12.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
 testing {
@@ -43,4 +51,30 @@ application {
 
 tasks.named<JavaExec>("run") {
     standardInput = System.`in`
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // Generate report after tests
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.90".toBigDecimal()
+            }
+        }
+    }
+}
+
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification)
 }
