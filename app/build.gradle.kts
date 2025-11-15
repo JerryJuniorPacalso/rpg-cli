@@ -24,17 +24,9 @@ dependencies {
     // Test dependencies
     testImplementation("org.mockito:mockito-core:5.14.0")
     testImplementation(platform("org.junit:junit-bom:5.12.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-}
-
-testing {
-    suites {
-        // Configure the built-in test suite
-        val test by getting(JvmTestSuite::class) {
-            // Use JUnit Jupiter test framework
-            useJUnitJupiter("5.12.1")
-        }
-    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -54,6 +46,7 @@ tasks.named<JavaExec>("run") {
 }
 
 tasks.test {
+    useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport) // Generate report after tests
 }
 
