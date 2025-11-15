@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.number && 'refs/pull/' + github.event.pull_request.number + '/merge' || github.ref }}
+          ref: ${{ github.event_name == 'pull_request' && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.ref }}
           fetch-depth: 0
 
       - name: 'Qodana Scan'
