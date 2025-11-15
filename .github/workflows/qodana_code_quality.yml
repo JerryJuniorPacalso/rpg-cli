@@ -27,8 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          ref: ${{ github.event_name == 'pull_request' && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.ref }}
           fetch-depth: 0
+
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2025.2
         env:
@@ -45,7 +46,7 @@ jobs:
           # quick-fixes available in Ultimate and Ultimate Plus plans
           push-fixes: 'none'
       - name: Upload Qodana SARIF results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           ref: ${{ github.ref }}
           sha: ${{ github.sha }}
