@@ -2,58 +2,86 @@
 sequenceDiagram
     autonumber
     participant P as Player
-    participant L as Location / Zone
+    participant PM as Player Manager
     participant W as World Map
     participant AM as Action Manager
     participant LM as Location Manager
     participant EM as Event Manager
     participant CM as Clock Manager
     participant FM as Fatigue Manager
+    participant BM as Battle Manager
 
-    Note over C: Start of Day (time may be morning / evening / night)
+    Note over CM: Start of Day (time may be morning / evening / night)
 
-    P->>EM: Wake up / Start Day
-    EM->>C: Register new day at current time
-    C->>EM: Trigger start-of-day events
-    EM->>FM: Reset daily fatigue modifiers
-    FM->>P: Update player fatigue status
-    EM->>P: Notify player of day start
+    P->>PM: Wake up / Start Day
+    PM->>CM: Register new day at current time
+    CM->>PM: Return day at current time
+    PM->>FM: Reset daily fatigue modifiers
+    FM->>PM: Set fatigue meter
+    PM->>LM: Get current location
+    LM->>PM: Return Player Location
+    PM->>EM: Trigger start-of-day events
+    EM->>PM: Return any start-of-day notifications
+    PM->>P: Notify Player of day start and present available actions
 
-    loop Day Loop until Player ends day, rests, or time reaches awake limit(fatigue)
+    loop Day Loop until Player ends day, rests, or Player is fatigued
+        Note over AM: Player Action Phase
         alt In Safe Area (Town / Settlement / Camp)
-            P->>L: Visit location (shop / craft / shrine / inn)
-            L->>C: Apply time cost
-            C->>EM: Check time-of-day events (including night)
+            P->>AM: Choose action (shop / craft / interact / rest)
+            AM->>AM: Process action effects
+            AM->>CM: Apply time cost
+            CM->>PM: Update current time
+            PM->>EM: Check time-of-day events
+            PM->>P: Notify Player of action results
         else In Dangerous Area (Plains / Forest / River / etc.)
-            P->>L: Perform action (explore / gather / hunt / rest)
-            L->>C: Apply time cost
-            L->>P: Chance of monster encounter
-            C->>EM: Check time-of-day events & progression
+            P->>AM: Choose action (explore / gather / hunt / rest)
+            AM->>AM: Process action effects
+            AM->>CM: Apply time cost
+            CM->>PM: Update current time
+            PM->>EM: Check time-of-day events
+            EM->>EM: Determine monster encounter chance
+            PM->>P: Notify Player of action results
         else Travel Between Areas
             P->>W: Move on world map
-            W->>C: Travel time cost
-            C->>EM: Trigger travel-related events
-            W->>L: Arrive at new location / zone
+            W->>P: Present travel options and time
+            P->>W: Select travel option
+            W->>PM: Update Player location
+            PM->>CM: Apply travel time cost
+            CM->>PM: Update current time
+            PM->>EM: Trigger travel-related events
+            EM->>PM: Return any travel notifications
+            PM->>LM: Get new location details
+            LM->>PM: Return new location info
+            PM->>P: Notify Player of travel results
         end
 
         opt Monster Encounter
-            P->>L: Enter combat
-            L->>C: Combat consumes time
-            C->>P: Update skill cooldowns (in-world time)
-            C->>EM: Check combat-related events
+            P->>BM: Enter combat
+            BM->>BM: Initialize combat scenario
+            loop Combat Loop until combat ends
+                BM->>P: Present combat options
+                P->>BM: Choose combat action
+                BM->>BM: Process combat action effects
+                BM->>P: Update Player on combat status
+            end
+            BM->>CM: Combat consumes time
+            CM->>PM: Update skill cooldowns (in-world time)
+            PM->>EM: Check combat-related events
+            EM->>PM: Return any combat notifications
+            PM->>P: Notify Player of combat results
         end
 
         opt End Day Decision
             break Player chooses to rest[short/long] or end day
-                P->>C: Decide to end day
+                P->>CM: Decide to end day
             end
         end
     end
 
-    Note over C: End of Day Processing
-    C->>EM: Run end-of-day events & summaries
-    P->>C: Sleep / End Day
-    P->>F: Update fatigue based on rest choice
-    C->>C: Advance calendar day
+    Note over CM: End of Day Processing
+    CM->>EM: Run end-of-day events & summaries
+    P->>CM: Sleep / End Day
+    P->>FM: Update fatigue based on rest choice
+    CM->>CM: Advance calendar day
     
 ```
