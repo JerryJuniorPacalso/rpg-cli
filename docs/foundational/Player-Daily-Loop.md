@@ -31,15 +31,22 @@ sequenceDiagram
             AM->>AM: Process action effects
             AM->>CM: Apply time cost
             CM->>PM: Update current time
+            PM->>FM: Update fatigue based on action
+            FM->>PM: Return updated fatigue status
             PM->>EM: Check time-of-day events
+            EM->>EM: Determine any special occurrences
+            EM->>PM: Return event notifications
             PM->>P: Notify Player of action results
         else In Dangerous Area (Plains / Forest / River / etc.)
             P->>AM: Choose action (explore / gather / hunt / rest)
             AM->>AM: Process action effects
             AM->>CM: Apply time cost
             CM->>PM: Update current time
+            PM->>FM: Update fatigue based on action
+            FM->>PM: Return updated fatigue status
             PM->>EM: Check time-of-day events
             EM->>EM: Determine monster encounter chance
+            EM->>PM: Return event notifications
             PM->>P: Notify Player of action results
         else Travel Between Areas
             P->>W: Move on world map
@@ -48,6 +55,8 @@ sequenceDiagram
             W->>PM: Update Player location
             PM->>CM: Apply travel time cost
             CM->>PM: Update current time
+            PM->>FM: Update fatigue based on travel
+            FM->>PM: Return updated fatigue status
             PM->>EM: Trigger travel-related events
             EM->>PM: Return any travel notifications
             PM->>LM: Get new location details
@@ -66,6 +75,8 @@ sequenceDiagram
             end
             BM->>CM: Combat consumes time
             CM->>PM: Update skill cooldowns (in-world time)
+            PM->>FM: Update fatigue based on combat
+            FM->>PM: Return updated fatigue status
             PM->>EM: Check combat-related events
             EM->>PM: Return any combat notifications
             PM->>P: Notify Player of combat results
@@ -80,8 +91,11 @@ sequenceDiagram
 
     Note over CM: End of Day Processing
     CM->>EM: Run end-of-day events & summaries
-    P->>CM: Sleep / End Day
-    P->>FM: Update fatigue based on rest choice
-    CM->>CM: Advance calendar day
+    EM->>PM: Return end-of-day notifications
+    PM->>FM: Update fatigue based on rest choice
+    FM->>PM: Return updated fatigue status
+    PM->>CM: Advance calendar day
+    CM->>PM: Return new day at current time
+    PM->>P: Notify Player of end-of-day summary
     
 ```
