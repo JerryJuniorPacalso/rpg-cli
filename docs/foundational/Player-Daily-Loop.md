@@ -10,6 +10,7 @@ sequenceDiagram
     participant CM as Clock Manager
     participant FM as Fatigue Manager
     participant BM as Battle Manager
+    participant CSM as Crystal Stress Manager
 
     Note over CM: Start of Day (time may be morning / evening / night)
 
@@ -21,6 +22,8 @@ sequenceDiagram
     PM->>LM: Get current location
     LM->>PM: Return Player Location
     PM->>EM: Trigger start-of-day events
+    EM->>CSRM: Check for crystal stress effects
+    CSRM->>EM: Return any crystal stress notifications
     EM->>PM: Return any start-of-day notifications
     PM->>P: Notify Player of day start and present available actions
 
@@ -35,6 +38,8 @@ sequenceDiagram
             FM->>PM: Return updated fatigue status
             PM->>EM: Check time-of-day events
             EM->>EM: Determine any special occurrences
+            EM->>CSRM: Check for crystal stress effects
+            CSRM->>EM: Return any crystal stress notifications
             EM->>PM: Return event notifications
             PM->>P: Notify Player of action results
         else In Dangerous Area (Plains / Forest / River / etc.)
@@ -45,6 +50,8 @@ sequenceDiagram
             PM->>FM: Update fatigue based on action
             FM->>PM: Return updated fatigue status
             PM->>EM: Check time-of-day events
+            EM->>CSRM: Check for crystal stress effects
+            CSRM->>EM: Return any crystal stress notifications
             EM->>EM: Determine monster encounter chance
             EM->>PM: Return event notifications
             PM->>P: Notify Player of action results
@@ -58,6 +65,8 @@ sequenceDiagram
             PM->>FM: Update fatigue based on travel
             FM->>PM: Return updated fatigue status
             PM->>EM: Trigger travel-related events
+            EM->>CSRM: Check for crystal stress effects
+            CSRM->>EM: Return any crystal stress notifications
             EM->>PM: Return any travel notifications
             PM->>LM: Get new location details
             LM->>PM: Return new location info
@@ -91,6 +100,8 @@ sequenceDiagram
 
     Note over CM: End of Day Processing
     CM->>EM: Run end-of-day events & summaries
+    EM->>CSRM: Check for crystal stress effects
+    CSRM->>EM: Return any crystal stress notifications
     EM->>PM: Return end-of-day notifications
     PM->>FM: Update fatigue based on rest choice
     FM->>PM: Return updated fatigue status
